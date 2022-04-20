@@ -8,10 +8,6 @@ import Data.Aeson
 import Data.Foldable
 
 
-newtype Store =
-  Store { path :: String
-        }
-
 append :: [Types.Event] -> IO ()
 append events = do
   withConnection "candidate.db" $ \conn ->

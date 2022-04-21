@@ -20,6 +20,7 @@ import Network.WebSockets
 import Data.Proxy
 import Control.Concurrent
 import Control.Concurrent.Async
+import Control.Monad
 
 cmds =
         [ AddCandidate (Candidate { name = T.pack "can1" , cid = 1, status = Begin })
@@ -41,11 +42,27 @@ server :: Server ServantType
 server = streamData :<|>  serveDirectoryFileServer "static/"
   where
     streamData c = do
-      liftIO $ do
-        events <- readAll
-        let state = foldl interp initState events
-        putStrLn "Sending data"
-        sendTextData c (encode state) >> threadDelay  1000000
+      liftIO $ race_ receive send
+      where
+        receive = forever $ do
+          putStrLn "Receiving data"
+          m <- receiveData c
+          let msg = decode m
+          --msg <- decode <$> receiveData c
+          putStr "received"
+          print m
+          print msg
+          case msg of
+            Just cmd -> do
+              let delta = decide cmd
+              append delta
+            _ -> return ()
+
+        send = forever $ do
+          events <- readAll
+          let state = foldl interp initState events
+          putStrLn "Sending data"
+          sendTextData c (encode state) >> threadDelay  1000000
 
 
 app :: Application

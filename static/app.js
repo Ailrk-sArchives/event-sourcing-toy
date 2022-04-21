@@ -3,7 +3,7 @@ const main = () => {
   const newCandidate = (cid, name) => {
     m = {
       contents : {
-        cid : cid,
+        cid : Number.parseInt(cid),
         name : name,
         status : "Begin"
       },

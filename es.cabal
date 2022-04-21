@@ -28,7 +28,7 @@ executable es
     other-modules:
       Store
       Types
-      Class
+      Service
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
@@ -41,5 +41,14 @@ executable es
       , mtl
       , bytestring
       , text
+      , stm
+      , async
+      , time
+      , timestamp
+      , servant
+      , servant-server
+      , servant-websockets
+      , warp
+      , websockets
     hs-source-dirs:   app
     default-language: Haskell2010
